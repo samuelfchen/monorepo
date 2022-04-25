@@ -1,5 +1,5 @@
 var person = {
-    name: 'Samuel',
-    age: 20
+  name: "Samuel",
+  age: 20,
 };
-console.log(person.nickname);
+console.log(person.name);
