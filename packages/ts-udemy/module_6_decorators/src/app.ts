@@ -63,11 +63,12 @@ function Log3(
   target: any,
   name: string | Symbol,
   descriptor: PropertyDescriptor
-) {
+): PropertyDescriptor {
   console.log("Method decorator");
   console.log(target);
   console.log(name);
   console.log(descriptor);
+  return {};
 }
 
 function Log4(target: any, name: string | Symbol, position: number) {
@@ -106,3 +107,32 @@ const p1 = new Product("Book 1", 1);
 const p2 = new Product("Book 2", 2);
 
 console.log(p1, p2);
+
+// ---
+
+function AutoBind(_: any, __: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+  const adjDescriptor: PropertyDescriptor = {
+    configurable: true,
+    enumerable: false,
+    get() {
+      const boundFn = originalMethod.bind(this);
+      return boundFn;
+    },
+  };
+  return adjDescriptor;
+}
+
+class Printer {
+  message = "This works!";
+
+  @AutoBind
+  showMessage() {
+    console.log(this.message);
+  }
+}
+
+const p = new Printer();
+
+const button = document.querySelector("button")!;
+button.addEventListener("click", p.showMessage);
